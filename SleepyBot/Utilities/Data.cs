@@ -38,7 +38,7 @@ namespace SleepyBot.Utilities
 
         public static string GetBlogLink(long id)
         {
-            string key = id.ToString() + "Blog";
+            string key = "Blog:" + id.ToString();
             string value = Db.StringGet(key);
             Console.WriteLine($"Read from Redis {key}:{value}");
             return value;
@@ -46,7 +46,7 @@ namespace SleepyBot.Utilities
 
         public static bool SetBlogLink(long id, string addr)
         {
-            string key = id.ToString() + "Blog";
+            string key = "Blog:" + id.ToString();
             return Db.StringSet(key, addr);
         }
 
