@@ -10,6 +10,8 @@ var succeed = await BotStartup.Connect(config);
 if (succeed)
 {
     Console.WriteLine("Startup OK");
+
+    BotAuth.SetIdentity(Secret.DEV_QQ, UserIdentity.Developer);
     
     while (Console.ReadLine() != "exit")
     {
@@ -30,5 +32,8 @@ namespace SleepyBot
         //public static long QQ = ;
         //public static string HOST = "";
         //public static int PORT = ;
+        //public static string REDIS_ENDPOINT = "";
+        //public static string REDIS_AUTHKEY = "";
+        //public static long DEV_QQ = ;
     }
 }

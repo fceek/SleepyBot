@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Maila.Cocoa.Framework" Version="2.1.5.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
   </ItemGroup>
 
   <ItemGroup>
