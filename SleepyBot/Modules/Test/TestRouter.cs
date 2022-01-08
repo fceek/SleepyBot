@@ -8,6 +8,9 @@ using SleepyBot.Utilities;
 
 namespace SleepyBot.Modules.Test
 {
+    /// <summary>
+    /// 一些测试指令，需要开发者权限。
+    /// </summary>
     [BotModule]
     [IdentityRequirements(UserIdentity.Developer)]
     public class TestRouter : BotModuleBase

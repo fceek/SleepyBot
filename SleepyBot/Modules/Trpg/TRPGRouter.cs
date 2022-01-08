@@ -3,10 +3,12 @@ using SleepyBot.Utilities;
 
 namespace SleepyBot.Modules.Trpg
 {
+    /// <summary>
+    /// Trpg相关的指令。
+    /// </summary>
     [BotModule]
     public class TrpgRouter : BotModuleBase
     {
-        
 
         [RegexRoute("(R|r)oll (?<rawCount>[0-9]+)(D|d)(?<rawDice>[0-9]+)")]
         public static string RollDice(MessageSource src, string rawCount, string rawDice)

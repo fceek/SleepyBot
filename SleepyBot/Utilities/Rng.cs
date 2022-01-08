@@ -23,5 +23,10 @@ namespace SleepyBot.Utilities
         {
             return LazyRng.Next(1, faceCount + 1);
         }
+
+        public static T GetRandom<T>(this List<T> list)
+        {
+            return list[LazyRng.Next(list.Count)];
+        }
     }
 }
