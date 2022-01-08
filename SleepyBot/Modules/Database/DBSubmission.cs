@@ -21,10 +21,10 @@ namespace SleepyBot.Modules.Database
         }
 
         [RegexRoute("提交(:|：)吃的( *)(?<rawPlace>.*)")]
-        public static async void SubmitRestaurant(MessageSource src, string rawPlace)
+        public static void SubmitRestaurant(MessageSource src, string rawPlace)
         {
             src.Send($"尝试提交[{src.Group.GetGroupInfo().Name}]的吃饭地点");
-            string response = await Data.AddRestaurantAsync(src.Group.Id, rawPlace);
+            string response = Data.AddRestaurant(src.Group.Id, rawPlace);
             src.Send(response);
         }
     }

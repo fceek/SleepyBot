@@ -23,17 +23,17 @@ namespace SleepyBot.Modules.Database
         }
 
         [RegexRoute("(.*)吃什么(！|!)")]
-        public static async void GetRandomRestaurant(MessageSource src)
+        public static void GetRandomRestaurant(MessageSource src)
         {
-            string response = await Data.GetRandomRestaurantAsync(src.Group.Id);
+            string response = Data.GetRandomRestaurant(src.Group.Id);
             src.Send(response);
         }
 
         [RegexRoute("(.*)有什么吃的(!|！)?")]
-        public static async void GetAllRestaurant(MessageSource src)
+        public static void GetAllRestaurant(MessageSource src)
         {
             src.Send("我去看看！");
-            string response = await Data.GetAllRestaurantAsync(src.Group.Id);
+            string response = Data.GetAllRestaurant(src.Group.Id);
             src.Send(response);
         }
     }

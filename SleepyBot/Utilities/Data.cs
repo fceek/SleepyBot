@@ -54,26 +54,24 @@ namespace SleepyBot.Utilities
             return Db.StringSet(key, addr);
         }
 
-        private static async Task<int> InitRestaurantCacheAsync(string cacheKey)
+        private static void InitRestaurantCache(string cacheKey)
         {
             rest_Cache ??= new Dictionary<string, List<string>>();
 
             if (!rest_Cache.ContainsKey(cacheKey))
             {
-                if (!await TryCacheRestaurantDataAsync(cacheKey))
+                if (!TryCacheRestaurantData(cacheKey))
                 {
                     rest_Cache.Add(cacheKey, new List<string>());
                 }
             }
-
-            return 0;
         } 
 
-        public static async Task<string> GetRandomRestaurantAsync(long id)
+        public static string GetRandomRestaurant(long id)
         {
             string cacheKey = id.ToString();
 
-            _ = await InitRestaurantCacheAsync(cacheKey);
+            InitRestaurantCache(cacheKey);
 
             if (rest_Cache[cacheKey].Count >= 1)
             {
@@ -83,11 +81,11 @@ namespace SleepyBot.Utilities
             return "没得吃！没得吃！";
         }
 
-        public static async Task<string> GetAllRestaurantAsync(long id)
+        public static string GetAllRestaurant(long id)
         {
             string cacheKey = id.ToString();
 
-            _ = await InitRestaurantCacheAsync(cacheKey);
+            InitRestaurantCache(cacheKey);
 
             string response = string.Empty;
             if (rest_Cache[cacheKey].Count >= 1)
@@ -106,33 +104,27 @@ namespace SleepyBot.Utilities
             return response;
         }
 
-        public static async Task<string> AddRestaurantAsync(long id, string rawPlace)
+        public static string AddRestaurant(long id, string rawPlace)
         {
             string cacheKey = id.ToString();
 
-            InitRestaurantCacheAsync(cacheKey);
+            InitRestaurantCache(cacheKey);
 
             if (rest_Cache[cacheKey].Contains(rawPlace))
             {
                 return "地点已存在";
             }
-            else
+            rest_Cache[cacheKey].Add(rawPlace);
+            bool success = SubmitRestaurantData(cacheKey);
+            if (success)
             {
-                rest_Cache[cacheKey].Add(rawPlace);
-                bool success = await SubmitRestaurantDataAsync(cacheKey);
-                if (success)
-                {
-                    return "地点已提交";
-                }
-                else
-                {
-                    rest_Cache[cacheKey].Remove(rawPlace);
-                    return "地点提交失败";
-                }
+                return "地点已提交";
             }
+            rest_Cache[cacheKey].Remove(rawPlace);
+            return "地点提交失败";
         }
 
-        private static async Task<bool> SubmitRestaurantDataAsync(string key)
+        private static bool SubmitRestaurantData(string key)
         {
             string value = String.Empty;
             foreach (var place in rest_Cache[key])
@@ -142,15 +134,15 @@ namespace SleepyBot.Utilities
 
             value = value.Substring(0, value.Length - 1);
             string dbKey = "Restaurant:" + key;
-            return await Db.StringSetAsync(dbKey, value);
+            return Db.StringSet(dbKey, value);
         }
 
-        private static async Task<bool> TryCacheRestaurantDataAsync(string key)
+        private static bool TryCacheRestaurantData(string key)
         {
             string dbKey = "Restaurant:" + key;
             if (Db.KeyExists(dbKey))
             {
-                string value = await db.StringGetAsync(dbKey);
+                string value = db.StringGet(dbKey);
                 if (string.IsNullOrEmpty(value)) return false;
                 rest_Cache.Add(key, value.Split('|').ToList());
                 rest_Cache[key].RemoveAll(s => string.IsNullOrEmpty(s));
