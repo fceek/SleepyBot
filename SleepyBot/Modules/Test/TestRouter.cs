@@ -22,5 +22,29 @@ namespace SleepyBot.Modules.Test
             if (Data.TestDBConnection()) return "已连接至云端数据库。";
             return "云端数据库连接失败";
         }
+
+        [RegexRoute("Test:GCoreCrawler PageRange=(?<rawPageNum>[1-9][0-9]?)")]
+        public static void TestGCoreCrawler(MessageSource src, string rawPageNum)
+        {
+            src.Send("This may take a while...");
+            Console.WriteLine("Test:GCoreCrawler PageRange=" + rawPageNum);
+            int pageNum = int.Parse(rawPageNum);
+            List<string> links = WebHtml.FilterGCoreRadioLinksTillPage(pageNum);
+            Data.UpdateLinksFromSite("GCoreRadio", links);
+            src.Send("finished");
+        }
+
+        [TextRoute("Test:GCoreCrawler CacheInfo")]
+        public static void CachePageInfo(MessageSource src)
+        {
+            src.Send("This may take a while..."); 
+            List<string> links = Data.GetAllLinksFromSite("GCoreRadio");
+            int count = 0;
+            foreach (string link in links)
+            {
+                Data.StoreGCoreLinkInfo(link);
+                Console.WriteLine($"{++count}/{links.Count}");
+            }
+        }
     }
 }

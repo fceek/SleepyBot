@@ -13,6 +13,7 @@ namespace SleepyBot.Utilities
     {
         //本地缓存
         private static Dictionary<string, List<string>>? rest_Cache;
+        private static Dictionary<string, List<string>>? links_Cache;
 
         private static IDatabase? db;
 
@@ -38,6 +39,16 @@ namespace SleepyBot.Utilities
             conf.Password = Secret.REDIS_AUTHKEY;
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(conf,Console.Out);
             return redis.GetDatabase();
+        }
+
+        public static string StringGet(string key)
+        {
+            return Db.StringGet(key);
+        }
+
+        public static bool StringSet(string key, string value)
+        {
+            return Db.StringSet(key, value);
         }
 
         public static string GetBlogLink(long id)
@@ -149,6 +160,72 @@ namespace SleepyBot.Utilities
                 return true;
             }
             return false;
+        }
+
+        private static void InitLinksCache(string cacheKey)
+        {
+            links_Cache ??= new Dictionary<string, List<string>>();
+
+            if (!links_Cache.ContainsKey(cacheKey))
+            {
+                if (!TryCacheLinks(cacheKey))
+                {
+                    links_Cache.Add(cacheKey, new List<string>());
+                }
+            }
+        }
+
+        private static bool TryCacheLinks(string cacheKey)
+        {
+            string dbKey = "Links:" + cacheKey;
+            if (Db.KeyExists(dbKey))
+            {
+                string value = db.StringGet(dbKey);
+                if (string.IsNullOrEmpty(value)) return false;
+                links_Cache.Add(cacheKey,value.Split('|').ToList());
+                links_Cache[cacheKey].RemoveAll(s => string.IsNullOrEmpty(s));
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool UpdateLinksFromSite(string key, List<string> newLinks)
+        {
+            InitLinksCache(key);
+            foreach (string newLink in newLinks)
+            {
+                if (!links_Cache[key].Contains(newLink))
+                {
+                    links_Cache[key].Add(newLink);
+                }
+            }
+
+            string value = string.Empty;
+            foreach (string link in links_Cache[key])
+            {
+                value += (link + "|");
+            }
+
+            value = value.TrimEnd('|');
+            string dbKey = "Links:" + key;
+            return Db.StringSet(dbKey, value);
+        }
+
+        public static void StoreGCoreLinkInfo(string link)
+        {
+            string dbKey = $"Links:GCoreRadio:{link}";
+            if (Db.KeyExists(dbKey)) return;
+            string linkFull = $"https://www.gcores.com/radios/{link}";
+            string title = WebHtml.GetNodeFromLink(linkFull, "//h1[@class=\"originalPage_title\"]");
+            string description = WebHtml.GetNodeFromLink(linkFull, "//p[@class=\"originalPage_desc\"]");
+            Db.StringSet(dbKey, $"{title}|{description}");
+        }
+
+        public static List<string> GetAllLinksFromSite(string key)
+        {
+            InitLinksCache(key);
+            return links_Cache[key];
         }
 
         public static bool TestDBConnection()
