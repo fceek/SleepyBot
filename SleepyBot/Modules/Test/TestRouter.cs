@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Maila.Cocoa.Framework;
+using SleepyBot.Structures;
 using SleepyBot.Utilities;
 
 namespace SleepyBot.Modules.Test
@@ -44,6 +45,17 @@ namespace SleepyBot.Modules.Test
             {
                 Data.StoreGCoreLinkInfo(link);
                 Console.WriteLine($"{++count}/{links.Count}");
+            }
+        }
+
+        [TextRoute("Test:YabiAPI")]
+        public static async void TestYabiAPI(MessageSource src)
+        {
+            var response = await WebHtml.GetYabiEvents(0, 10);
+            foreach (WebResponses.YabiEvent yabiEvent in response)
+            {
+                Console.WriteLine(yabiEvent.name);
+                Console.WriteLine(yabiEvent.timeStr);
             }
         }
     }
