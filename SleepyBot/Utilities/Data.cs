@@ -14,6 +14,7 @@ namespace SleepyBot.Utilities
         //本地缓存
         private static Dictionary<string, List<string>>? rest_Cache;
         private static Dictionary<string, List<string>>? links_Cache;
+        private static List<string> boa_Cache;
 
         private static IDatabase? db;
 
@@ -226,6 +227,18 @@ namespace SleepyBot.Utilities
         {
             InitLinksCache(key);
             return links_Cache[key];
+        }
+
+        public static string GetRandomBoa()
+        {
+            if (boa_Cache == null)
+            {
+                boa_Cache = Db.StringGet("BookOfAnswers").ToString().Split('|').ToList();
+                if (boa_Cache == null) return "无法从云端获取The Book of Answers";
+            }
+
+            return boa_Cache.GetRandom();
+
         }
 
         public static bool TestDBConnection()

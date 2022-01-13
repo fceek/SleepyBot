@@ -36,5 +36,11 @@ namespace SleepyBot.Modules.Database
             string response = Data.GetAllRestaurant(src.Group.Id);
             src.Send(response);
         }
+
+        [RegexRoute("(.*)答案之书(.*)(!|！)")]
+        public static void GetRandomBoa(MessageSource src)
+        {
+            src.Send("它说： " + Data.GetRandomBoa() + "\n答案之书获取自 https://github.com/D1N910/answers-of-my-life");
+        }
     }
 }
