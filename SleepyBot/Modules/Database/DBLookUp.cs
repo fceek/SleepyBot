@@ -42,5 +42,11 @@ namespace SleepyBot.Modules.Database
         {
             src.Send("它说： " + Data.GetRandomBoa() + "\n答案之书获取自 https://github.com/D1N910/answers-of-my-life");
         }
+
+        [TextRoute("Wordle start")]
+        public static string GetRandomWordles(MessageSource src)
+        {
+            return $"今天就从这些词开始吧！\n" + Data.GetRandomWordle(5);
+        }
     }
 }

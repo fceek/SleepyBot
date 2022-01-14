@@ -15,6 +15,7 @@ namespace SleepyBot.Utilities
         private static Dictionary<string, List<string>>? rest_Cache;
         private static Dictionary<string, List<string>>? links_Cache;
         private static List<string> boa_Cache;
+        private static List<string> wordle_Cache;
 
         private static IDatabase? db;
 
@@ -239,6 +240,22 @@ namespace SleepyBot.Utilities
 
             return boa_Cache.GetRandom();
 
+        }
+
+        public static string GetRandomWordle(int count)
+        {
+            if (wordle_Cache == null)
+            {
+                wordle_Cache = Db.StringGet("WordleWords").ToString().Split('|').ToList();
+                if (wordle_Cache == null) return "无法从云端获取Wordle List";
+            }
+
+            string response = string.Empty;
+            for (int i = 0; i < count; i++)
+            {
+                response += (wordle_Cache.GetRandom() + "\n");
+            }
+            return response;
         }
 
         public static bool TestDBConnection()
