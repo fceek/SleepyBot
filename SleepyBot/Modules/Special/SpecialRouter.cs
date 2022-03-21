@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Maila.Cocoa.Beans.Models.Messages;
 using Maila.Cocoa.Framework;
 using SleepyBot.Structures;
 using SleepyBot.Utilities;
@@ -75,6 +76,12 @@ namespace SleepyBot.Modules.Special
         public static void WhyRepeater(MessageSource src, QMessage msg)
         {
             src.Send(msg + "！");
+        }
+
+        [RegexRoute("^(H|h)elp!")]
+        public static void HelpInfo(MessageSource src)
+        {
+            src.Send("文档从这里看起 https://fceek.github.io/wiki/SleepyBot/Commands/TRPG.html");
         }
     }
 }

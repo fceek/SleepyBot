@@ -11,13 +11,6 @@ namespace SleepyBot.Modules.Underwork
     [BotModule]
     public class UnderworkModule : BotModuleBase
     {
-        [RegexRoute("(.*)过年放假(.*)")]
-        public static string GetTimeTillNewYear(MessageSource src)
-        {
-            string response = Time.FromNowToTargetStr(new DateTime(2022, 1, 26, 19, 0, 0, DateTimeKind.Local));
-            return $"离过年放假还有{response}！";
-        }
-
         [RegexRoute("(.*)下班(.*)(!|！)")]
         public static string GetTimeTillOffWork(MessageSource src)
         {
