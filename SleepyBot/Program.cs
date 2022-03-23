@@ -1,12 +1,13 @@
 ﻿using System.Configuration;
 using System.Collections.Specialized;
 using System;
+using Maila.Cocoa.Beans.API;
 using Maila.Cocoa.Framework;
 using Maila.Cocoa.Framework.Support;
 using SleepyBot;
 
-BotStartupConfig config = new(Secret.V_KEY, Secret.QQ, Secret.HOST, Secret.PORT);
-var succeed = await BotStartup.Connect(config);
+BotStartupConfig config = new(Secret.VerifyKey, Secret.BotId, Secret.MiraiHost, Secret.MiraiPort);
+bool succeed = await BotStartup.Connect(config);
 
 if (succeed)
 {
@@ -14,11 +15,18 @@ if (succeed)
 
     // Do module init. e.g. prefetch data from database todo 
 
-    
+    BotAPI.OnBotInvitedJoinGroupRequest = e =>
+    {
+        if (e.FromId == Secret.DevId)
+        {
+            e.Response(
+                BotInvitedJoinGroupRequestOperate.Agree);
+        }
+    };
 
     // Do auth. e.g. add myself as developer
 
-    BotAuth.SetIdentity(Secret.DEV_QQ, UserIdentity.Developer);
+    BotAuth.SetIdentity(Secret.DevId, UserIdentity.Developer);
 
     while (Console.ReadLine() != "exit")
     {
@@ -35,14 +43,14 @@ else
 // Remote: Mirai console with mirai-http-api, Redis.
 namespace SleepyBot
 {
-    static partial class Secret
+    internal static partial class Secret
     {
-        //public static string V_KEY = "";
-        //public static long QQ = ;
-        //public static string HOST = "";
-        //public static int PORT = ;
-        //public static string REDIS_ENDPOINT = "";
-        //public static string REDIS_AUTHKEY = "";
-        //public static long DEV_QQ = ;
+        // public const string VerifyKey = "";
+        // public const long BotId = ;
+        // public const string MiraiHost = "";
+        // public const int MiraiPort = ;
+        // public const string RedisEndpoint = "";
+        // public const string RedisAuthKey = "";
+        // public const long DevId = ;
     }
 }

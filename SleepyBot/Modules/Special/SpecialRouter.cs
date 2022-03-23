@@ -62,7 +62,7 @@ namespace SleepyBot.Modules.Special
                     response += $"{yabiEvent.name}\n{yabiEvent.timeStr}\n\n";
                     continue;
                 }
-                string desc = yabiEvent.description.Replace("\n", "/").TrimEnd('/');
+                string desc = (yabiEvent.description == null)?string.Empty:yabiEvent.description.Replace("\n", "/").TrimEnd('/');
                 if (desc.Length > descLength)
                 {
                     desc = desc.Substring(0, descLength - 3) + "...";

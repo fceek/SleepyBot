@@ -36,9 +36,9 @@ namespace SleepyBot.Utilities
         {
             ConfigurationOptions conf = new ConfigurationOptions
             {
-                EndPoints = {Secret.REDIS_ENDPOINT}
+                EndPoints = {Secret.RedisEndpoint}
             };
-            conf.Password = Secret.REDIS_AUTHKEY;
+            conf.Password = Secret.RedisAuthKey;
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(conf,Console.Out);
             return redis.GetDatabase();
         }
